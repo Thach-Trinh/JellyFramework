@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -99,6 +100,17 @@ namespace JellyFramework.ExtensionMethod
             for (int i = 0; i < elements.Count; i++)
                 lst.AddIfNotExists(elements[i]);
         }
+
+        public static void LogInfo<TKey, TValue>(this Dictionary<TKey, TValue> dict, string label)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{label}: {dict.Count}");
+            foreach (KeyValuePair<TKey, TValue> pair in dict)
+                sb.AppendLine($"- {pair.Key}: {pair.Value}");
+            Debug.Log(sb);
+        }
+
+        public static void LogInfo<TKey, TValue>(this Dictionary<TKey, TValue> dict) => dict.LogInfo("Dictionary");
 
         public static void ClearAndCopy<T>(this List<T> lst, List<T> other)
         {
