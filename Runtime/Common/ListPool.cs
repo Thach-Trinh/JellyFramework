@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Collections;
+
 namespace JellyFramework
 {
     public static class ListPool
@@ -8,17 +12,15 @@ namespace JellyFramework
         {
             var type = typeof(T);
             if (pools.TryGetValue(type, out Stack<IList> stack) && stack.Count > 0)
-            {
-                return (List<T>)stack.Pop();
-            }
+                return stack.Pop() as List<T>;
             return new List<T>();
         }
 
         public static void Return<T>(List<T> list)
         {
             list.Clear();
-            var type = typeof(T);
-            if (!pools.TryGetValue(type, out var stack))
+            Type type = typeof(T);
+            if (!pools.TryGetValue(type, out Stack<IList> stack))
             {
                 stack = new Stack<IList>();
                 pools[type] = stack;
