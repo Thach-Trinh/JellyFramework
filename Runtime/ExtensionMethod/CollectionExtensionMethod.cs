@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -45,14 +46,6 @@ namespace JellyFramework.ExtensionMethod
             }
         }
 
-        public static T TakeRandom<T>(this List<T> lst)
-        {
-            int index = Random.Range(0, lst.Count);
-            T element = lst[index];
-            lst.RemoveAt(index);
-            return element;
-        }
-
         public static T ChooseRandom<T>(this T[] arr)
         {
             int index = Random.Range(0, arr.Length);
@@ -63,6 +56,28 @@ namespace JellyFramework.ExtensionMethod
         {
             int index = Random.Range(0, list.Count);
             return list[index];
+        }
+
+        public static KeyValuePair<TKey, TValue> ChooseRandom<TKey, TValue>(this Dictionary<TKey, TValue> dict)
+        {
+            int index = Random.Range(0, dict.Count);
+            return dict.ElementAt(index);
+        }
+
+        public static T TakeRandom<T>(this List<T> lst)
+        {
+            int index = Random.Range(0, lst.Count);
+            T element = lst[index];
+            lst.RemoveAt(index);
+            return element;
+        }
+
+        public static KeyValuePair<TKey, TValue> TakeRandom<TKey, TValue>(this Dictionary<TKey, TValue> dict)
+        {
+            int index = Random.Range(0, dict.Count);
+            KeyValuePair<TKey, TValue> element = dict.ElementAt(index);
+            dict.Remove(element.Key);
+            return element;
         }
 
         public static T TakeFirst<T>(this List<T> lst)
@@ -80,25 +95,31 @@ namespace JellyFramework.ExtensionMethod
         }
 
 
-        public static void TryAdd<T1, T2>(this Dictionary<T1, T2> dict, T1 key, T2 value)
+        public static bool TryAdd<T>(this List<T> lst, T element)
         {
-            if (dict.ContainsKey(key))
-                dict[key] = value;
-            else
-                dict.Add(key, value);
-        }
-
-        public static void AddIfNotExists<T>(this List<T> lst, T element)
-        {
-            if (!lst.Contains(element))
+            bool canAdd = lst.Contains(element);
+            if (!canAdd)
                 lst.Add(element);
+            return canAdd;
+        }
+
+        public static void LogInfo<T>(this T[] arr, string label)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{label}: {arr.Length}");
+            for (int i = 0; i < arr.Length; i++)
+                sb.AppendLine($"- {i}: {arr[i]}");
+            Debug.Log(sb);
         }
 
 
-        public static void AddIfNotExists<T>(this List<T> lst, List<T> elements)
+        public static void LogInfo<T>(this List<T> lst, string label)
         {
-            for (int i = 0; i < elements.Count; i++)
-                lst.AddIfNotExists(elements[i]);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{label}: {lst.Count}");
+            for (int i = 0; i < lst.Count; i++)
+                sb.AppendLine($"- {i}: {lst[i]}");
+            Debug.Log(sb);
         }
 
         public static void LogInfo<TKey, TValue>(this Dictionary<TKey, TValue> dict, string label)
@@ -110,14 +131,6 @@ namespace JellyFramework.ExtensionMethod
             Debug.Log(sb);
         }
 
-        public static void LogInfo<TKey, TValue>(this Dictionary<TKey, TValue> dict) => dict.LogInfo("Dictionary");
-
-        public static void ClearAndCopy<T>(this List<T> lst, List<T> other)
-        {
-            lst.Clear();
-            for (int i = 0; i < other.Count; i++)
-                lst.Add(other[i]);
-        }
 
         public static List<T> TryGetRange<T>(this List<T> lst, int index, int count)
         {
@@ -127,5 +140,39 @@ namespace JellyFramework.ExtensionMethod
             int newCount = Mathf.Clamp(count, 0, lst.Count - newIndex);
             return lst.GetRange(newIndex, newCount);
         }
+
+        //public static void LogInfo<T>(this List<ElementAmount<T>> lst)
+        //{
+        //    Debug.Log($"Total: {lst.Count}");
+        //    for (int i = 0; i < lst.Count; i++)
+        //    {
+        //        ElementAmount<T> elementAmount = lst[i];
+        //        Debug.Log($"Element {elementAmount.element} - Amount {elementAmount.amount}:");
+        //    }
+        //}
+
+        //public static void CountElement<T>(this List<ElementAmount<T>> lst, T element)
+        //{
+        //    CountElement(lst, element, x => x.element.Equals(element));
+        //}
+
+        //public static void CountElement<T>(this List<ElementAmount<T>> lst, T element, Predicate<ElementAmount<T>> match)
+        //{
+        //    ElementAmount<T> elementAmount = lst.Find(match);
+        //    if (elementAmount == null)
+        //        lst.Add(new ElementAmount<T>(element, 1));
+        //    else
+        //        elementAmount.amount++;
+        //}
+
+        //public static void CollectElement<T1, T2>(this List<ElementGroup<T1, T2>> lst, T2 element, int capacity, Func<T2, T1> getData)
+        //{
+        //    T1 data = getData(element);
+        //    ElementGroup<T1, T2> elementGroup = lst.Find((x) => x.key.Equals(data));
+        //    if (elementGroup == null)
+        //        lst.Add(new ElementGroup<T1, T2>(data, element, capacity));
+        //    else
+        //        elementGroup.TryAdd(element);
+        //}
     }
 }

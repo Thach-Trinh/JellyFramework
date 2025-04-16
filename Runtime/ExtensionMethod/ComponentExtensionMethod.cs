@@ -10,8 +10,10 @@ public static class ComponentExtensionMethod
         graphic.color = color;
     }
 
-    //public static float GetDistanceOnXYPlane(this Vector3 vector)
-    //{
-    //    return Mathf.Sqrt(Mathf.Pow(vector.x, 2) + Mathf.Pow(vector.y, 2));
-    //}
+    public static void SetAlpha(this SpriteRenderer renderer, float alpha)
+    {
+        Color color = renderer.color;
+        color.a = alpha;
+        renderer.color = color;
+    }
 }
