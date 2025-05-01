@@ -11,9 +11,6 @@ namespace JellyFramework.StateMachine
         [SerializeField] protected TType type;
         public TType Type => type;
         public override void Init(BaseStateMachine machine) => this.machine = machine as TMachine;
-        public abstract void EnterState();
-        public abstract void UpdateState(float deltaTime, float timeScale);
-        public abstract void ExitState();
     }
 }
 
