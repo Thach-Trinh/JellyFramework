@@ -6,4 +6,9 @@ namespace JellyFramework.StateMachine
     {
         public abstract void Init(BaseStateMachine machine);
     }
+
+    public interface IInjector<T>
+    {
+        void Inject(T data);
+    }
 }
