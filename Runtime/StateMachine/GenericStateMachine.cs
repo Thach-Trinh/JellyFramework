@@ -6,7 +6,7 @@ namespace JellyFramework.StateMachine
 {
     public class GenericStateMachine<TMachine, TState, TType> : BaseStateMachine
         where TMachine : BaseStateMachine
-        where TState : GenericState<TMachine, TState, TType>
+        where TState : GenericState<TMachine, TType>
         where TType : Enum
     {
         [SerializeField] private TState[] states;

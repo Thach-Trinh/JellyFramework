@@ -3,9 +3,8 @@ using UnityEngine;
 
 namespace JellyFramework.StateMachine
 {
-    public abstract class GenericState<TMachine, TState, TType> : BaseState
+    public abstract class GenericState<TMachine, TType> : BaseState
         where TMachine : BaseStateMachine
-        where TState : BaseState
         where TType : Enum
     {
         protected TMachine machine;
