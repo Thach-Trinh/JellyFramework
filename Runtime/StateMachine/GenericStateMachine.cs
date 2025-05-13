@@ -14,22 +14,12 @@ namespace JellyFramework.StateMachine
 
         private void Awake() => states.Iterate(x => x.Init(this));
 
-        public void ChangeState(TType type)
+        public void ChangeState(TType type, params object[] data)
         {
             TState newState = Array.Find(states, (state) => state.Type.Equals(type));
             curState?.ExitState();
             curState = newState;
-            curState?.EnterState();
-        }
-
-        public void ChangeState<TData>(TType type, TData data = default)
-        {
-            TState newState = Array.Find(states, (state) => state.Type.Equals(type));
-            curState?.ExitState();
-            curState = newState;
-            if (curState is IInjector<TData> injector)
-                injector.Inject(data);
-            curState?.EnterState();
+            curState?.EnterState(data);
         }
 
         public void Tick(float deltaTime, float timeScale) => curState?.UpdateState(deltaTime, timeScale);
