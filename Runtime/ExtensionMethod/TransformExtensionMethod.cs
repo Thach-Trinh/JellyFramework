@@ -110,13 +110,15 @@ namespace JellyFramework.ExtensionMethod
                 transform.forward = direction.normalized;
         }
 
-        //public static void RotateToward(this Transform trans, Vector3 target, float maxRadiansDelta)
-        //{
-        //    Vector3 direction = target - trans.position;
-        //    direction.y = 0;
-        //    if (direction != Vector3.zero)
-        //        trans.forward = Vector3.RotateTowards(trans.forward, direction.normalized, maxRadiansDelta, 0.0f);
-        //}
+
+
+        public static void RotateToward(this Transform trans, Vector3 target, float maxRadiansDelta)
+        {
+            Vector3 direction = target - trans.position;
+            direction.y = 0;
+            if (direction != Vector3.zero)
+                trans.forward = Vector3.RotateTowards(trans.forward, direction.normalized, maxRadiansDelta, 0.0f);
+        }
     }
 }
 
