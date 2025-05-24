@@ -1,7 +1,10 @@
 {
-    "name": "JellyFramework.Runtime",
+    "name": "JellyFramework.Runtime.Tween",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "UniTask",
+        "JellyFramework.Runtime"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

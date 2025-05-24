@@ -1,7 +1,10 @@
 {
-    "name": "JellyFramework.Runtime",
+    "name": "JellyFramework.Runtime.Flyer",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "JellyFramework.Runtime.Tween",
+        "JellyFramework.Runtime"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

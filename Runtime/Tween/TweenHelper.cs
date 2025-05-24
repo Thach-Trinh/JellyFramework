@@ -11,17 +11,15 @@ namespace JellyFramework
     public class TweenHelper : MonoBehaviour
     {
         private const float EPSILON = 0.00001f;
-        private CancellationTokenSource gameplaySource;
-        private CancellationTokenSource animSource;
+        private CancellationTokenSource mainSource;
         private CancellationToken destroyToken;
         private CancellationTokenSource linkedSource;
 
         private void Awake()
         {
-            gameplaySource = new CancellationTokenSource();
-            animSource = new CancellationTokenSource();
+            mainSource = new CancellationTokenSource();
             destroyToken = this.GetCancellationTokenOnDestroy();
-            linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
+            linkedSource = CancellationTokenSource.CreateLinkedTokenSource(mainSource.Token, destroyToken);
         }
 
         public async UniTask MoveAlongPath(Transform trans, List<Vector3> path, float moveSpeed, bool smoothRotate = false, float rotateSpeed = 0, Func<bool> pauseCondition = null)
@@ -55,7 +53,7 @@ namespace JellyFramework
 
         public async UniTask MoveToTarget(Transform trans, Vector3 target, float speed, bool lookToTarget = false, Func<bool> pauseCondition = null, CancellationTokenSource additionalSource = null)
         {
-            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
+            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(mainSource.Token, destroyToken);
             if (additionalSource != null)
                 linkedSource = CancellationTokenSource.CreateLinkedTokenSource(linkedSource.Token, additionalSource.Token);
             if (lookToTarget)
@@ -71,7 +69,7 @@ namespace JellyFramework
 
         public async UniTask RotateToTarget(Transform trans, Vector3 target, float speed, Func<bool> pauseCondition = null, CancellationTokenSource additionalSource = null)
         {
-            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
+            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(mainSource.Token, destroyToken);
             if (additionalSource != null)
                 linkedSource = CancellationTokenSource.CreateLinkedTokenSource(linkedSource.Token, additionalSource.Token);
             while (Vector3.Distance(trans.position, target) > EPSILON)
@@ -88,30 +86,9 @@ namespace JellyFramework
 
 
 
-
-        //public async UniTask MoveToTargetWithTimer(Transform trans, Vector3 target, float timer, bool lookRatation = false, Func<bool> pauseCondition = null, Quaternion targetRotation = default, CancellationTokenSource additionalSource = null)
-        //{
-        //    CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
-        //    if (additionalSource != null)
-        //        linkedSource = CancellationTokenSource.CreateLinkedTokenSource(linkedSource.Token, additionalSource.Token);
-        //    float ticker = 0;
-        //    Vector3 startPos = trans.position;
-        //    while (ticker < timer)
-        //    {
-        //        if (pauseCondition == null || !pauseCondition())
-        //        {
-        //            ticker += Time.deltaTime;
-        //            trans.position = Vector3.Lerp(startPos, target, Easings.Linear(ticker / timer));
-        //            if (lookRatation && targetRotation != default) trans.rotation = Quaternion.Slerp(trans.rotation, targetRotation, Easings.Linear(ticker / timer));
-        //        }
-        //        await UniTask.Yield(linkedSource.Token);
-        //    }
-        //    trans.position = target;
-        //}
-
         public async UniTask RotateBySpeed(Transform trans, float speed, Quaternion targetRotation, Func<bool> pauseCondition = null, CancellationTokenSource additionalSource = null)
         {
-            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
+            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(mainSource.Token, destroyToken);
             if (additionalSource != null)
                 linkedSource = CancellationTokenSource.CreateLinkedTokenSource(linkedSource.Token, additionalSource.Token);
             float angle = Quaternion.Angle(trans.rotation, targetRotation);
@@ -130,7 +107,7 @@ namespace JellyFramework
 
         public async UniTask Slerp(Transform trans, Vector3 target, float centerOffset, float duration, Func<bool> pauseCondition = null)
         {
-            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
+            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(mainSource.Token, destroyToken);
             Vector3 startPos = trans.position;
             Vector3 center = (startPos + target) / 2f - centerOffset * Vector3.up;
             Vector3 relA = startPos - center;
@@ -174,7 +151,7 @@ namespace JellyFramework
 
         public async UniTask WaitUntil(Func<bool> predicate)
         {
-            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
+            CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(mainSource.Token, destroyToken);
             await UniTask.WaitUntil(predicate, cancellationToken: linkedSource.Token);
         }
 
@@ -266,11 +243,11 @@ namespace JellyFramework
             => ChangeValueBySpeedWithEnumerator(startValue, endValue, speed, Quaternion.Angle, Quaternion.RotateTowards, action);
             
 
-        public void ClearLevel()
+        public void CancelAllTween()
         {
-            gameplaySource.Cancel();
-            gameplaySource = new CancellationTokenSource();
-            linkedSource = CancellationTokenSource.CreateLinkedTokenSource(gameplaySource.Token, destroyToken);
+            mainSource.Cancel();
+            mainSource = new CancellationTokenSource();
+            linkedSource = CancellationTokenSource.CreateLinkedTokenSource(mainSource.Token, destroyToken);
         }
     }
 }
