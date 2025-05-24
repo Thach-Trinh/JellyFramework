@@ -6,7 +6,7 @@ using System.Threading;
 using UnityEngine;
 using JellyFramework.ExtensionMethod;
 
-namespace JellyFramework
+namespace JellyFramework.Tween
 {
     public class TweenHelper : MonoBehaviour
     {
@@ -251,5 +251,3 @@ namespace JellyFramework
         }
     }
 }
-
-
