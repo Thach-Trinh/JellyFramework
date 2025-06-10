@@ -2,6 +2,6 @@ using UnityEngine;
 
 namespace JellyFramework.StateMachine
 {
-    public class BaseStateMachine : MonoBehaviour { }
+    public class BaseStateMachine { }
 }
 

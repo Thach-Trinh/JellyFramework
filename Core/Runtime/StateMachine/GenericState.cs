@@ -8,7 +8,7 @@ namespace JellyFramework.StateMachine
         where TType : Enum
     {
         protected TMachine machine;
-        [SerializeField] protected TType type;
+        [SerializeReference] protected TType type;
         public TType Type => type;
         
         public override void Init(BaseStateMachine machine)

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using JellyFramework.ExtensionMethod;
+using System.Collections.Generic;
 
 namespace JellyFramework.StateMachine
 {
@@ -9,20 +10,20 @@ namespace JellyFramework.StateMachine
         where TState : GenericState<TMachine, TType>
         where TType : Enum
     {
-        [SerializeField] private TState[] states;
+        [SerializeReference] protected List<TState> states;
         private TState curState;
 
-        private void Awake() => states.Iterate(x => x.Init(this));
+        public void Init() => states.Iterate(x => x.Init(this));
 
         public void ChangeState(TType type, params object[] data)
         {
-            TState newState = Array.Find(states, (state) => state.Type.Equals(type));
+            TState newState = states.Find((state) => state.Type.Equals(type));
             curState?.ExitState();
             curState = newState;
             curState?.EnterState(data);
         }
 
-        public void Tick(float deltaTime, float timeScale) => curState?.UpdateState(deltaTime, timeScale);
+        public void Update(float deltaTime, float timeScale) => curState?.UpdateState(deltaTime, timeScale);
     }
 }
 
