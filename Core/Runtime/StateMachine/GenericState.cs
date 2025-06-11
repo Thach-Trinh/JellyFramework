@@ -10,14 +10,8 @@ namespace JellyFramework.StateMachine
         protected TMachine machine;
         [SerializeReference] protected TType type;
         public TType Type => type;
-        
-        public override void Init(BaseStateMachine machine)
-        {
-            this.machine = machine as TMachine;
-            Setup();
-        }
 
-        protected virtual void Setup() { }
+        public virtual void Init(BaseStateMachine machine) => this.machine = machine as TMachine;
     }
 }
 
