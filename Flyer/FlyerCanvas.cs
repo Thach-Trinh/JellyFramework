@@ -14,7 +14,7 @@ namespace JellyFramework.FlyerSystem
 
         public void SpawnFlyer(Vector3 worldPos, FlyerAnimationStyle style)
         {
-            Vector2 anchoredPos = PositionConverter.ConvertWorldPosToAnchoredPos(Camera.main, worldPos, rectTransform, 0.5f * Vector2.one);
+            Vector2 anchoredPos = PositionConverter.FromWorldToCanvas(worldPos, Camera.main, rectTransform.rect, 0.5f * Vector2.one);
             FlyerObject obj = GetObj();
             obj.SetAnchoredPosition(anchoredPos);
             StartCoroutine(PlayAnim(obj, style));

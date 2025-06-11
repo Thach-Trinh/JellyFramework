@@ -1,21 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 
-
-
-public static class PositionConverter
+namespace JellyFramework
 {
-    public static Vector2 ConvertWorldPosToAnchoredPos(Camera cam, Vector3 worldPos, RectTransform rectTransform, Vector2 anchor)
+    public static class PositionConverter
     {
-        Vector3 viewPort = cam.WorldToViewportPoint(worldPos);
-        //Vector2 size = rectTransform.sizeDelta;
-        Vector2 size = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
-        Vector2 screenPos = new Vector2(
-            (viewPort.x - anchor.x) * size.x,
-            (viewPort.y - anchor.y) * size.y
-        );
-        //Debug.Log($"ConvertWorldPosToAnchoredPos: worldPos {worldPos} | viewPort {viewPort} | size {size} | screenPos {screenPos}");
-        return screenPos;
+        public static Vector2 FromWorldToCanvas(Vector3 worldPos, Camera cam, Rect rect, Vector2 anchor)
+        {
+            Vector3 viewport = cam.WorldToViewportPoint(worldPos);
+            return FromViewportToCanvas(viewport, rect, anchor);
+        }
+
+        public static Vector2 FromScreenToCanvas(Vector3 screenPos, Camera cam, Rect rect, Vector2 anchor)
+        {
+            Vector3 viewport = cam.ScreenToViewportPoint(screenPos);
+            return FromViewportToCanvas(viewport, rect, anchor);
+        }
+
+        private static Vector2 FromViewportToCanvas(Vector3 viewport, Rect rect, Vector2 anchor)
+            => new Vector2((viewport.x - anchor.x) * rect.width, (viewport.y - anchor.y) * rect.height);
     }
 }

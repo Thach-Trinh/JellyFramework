@@ -20,7 +20,7 @@ namespace JellyFramework.FlyerSystem
                 flyerObject.Img.SetAlpha(1 - normalizedTime);
             }
             Vector2 target = flyerObject.RectTransform.anchoredPosition + Vector2.up * offset;
-            yield return TweenHelper.ChangeVectorValueByTimeWithEnumerator(flyerObject.RectTransform.anchoredPosition, target, duration, curve, OnUpdate);
+            yield return TweenHelper.ChangeVectorValueWithTimeIE(flyerObject.RectTransform.anchoredPosition, target, duration, curve, OnUpdate, null);
         }
     }
 }
