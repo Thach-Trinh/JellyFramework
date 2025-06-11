@@ -13,7 +13,7 @@ namespace JellyFramework.StateMachine
         [SerializeReference] protected List<TState> states;
         private TState curState;
 
-        public void Init() => states.Iterate(x => x.Init(this));
+        public void InitStates() => states.Iterate(x => x.Init(this));
 
         public void ChangeState(TType type, params object[] data)
         {
