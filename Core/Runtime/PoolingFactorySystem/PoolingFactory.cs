@@ -5,21 +5,19 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 
-namespace JellyFramework.ObjectPool
+namespace JellyFramework.PoolingFactorySystem
 {
     [Serializable]
-    public class PoolFactoryWithId<T1, T2> : SpawningPool<T1>
+    public class PoolingFactoryWithId<T1, T2> : PoolingFactory<T1>
     where T1 : MonoBehaviour, ISpawnable<T1>
     where T2 : Enum
     {
         [SerializeField] private T2 type;
-
-        public PoolFactoryWithId(T1 prefab) : base(prefab) { }
-
-        public T2 Type => type;//prefab.Type
+        public PoolingFactoryWithId(T1 prefab) : base(prefab) { }
+        public T2 Type => type;
     }
 
-    public class SpawningPool<T> where T : MonoBehaviour, ISpawnable<T>
+    public class PoolingFactory<T> where T : MonoBehaviour, ISpawnable<T>
     {
         [SerializeField] protected T prefab;
         protected Queue<T> pool = new Queue<T>();
@@ -28,7 +26,7 @@ namespace JellyFramework.ObjectPool
         public int InstanceCount => instanceCount;
         public int PoolCount => pool != null ? pool.Count : 0;
 
-        public SpawningPool(T prefab)
+        public PoolingFactory(T prefab)
         {
             this.prefab = prefab;
             Init();
@@ -53,8 +51,7 @@ namespace JellyFramework.ObjectPool
             }
             T newObj = Object.Instantiate(prefab, parent);
             newObj.PoolId = instanceCount;
-            newObj.returnCallback1 = () => Return(newObj);
-            newObj.returnCallback2 = Return;
+            newObj.release = Return;
             newObj.OnSpawned();
             instanceCount++;
             return newObj;
@@ -63,7 +60,7 @@ namespace JellyFramework.ObjectPool
         public void Return(T obj)
         {
             obj.gameObject.SetActive(false);
-            obj.OnDespawned();
+            obj.OnReleased();
             pool.Enqueue(obj);
         }
     }
