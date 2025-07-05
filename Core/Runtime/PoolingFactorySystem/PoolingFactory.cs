@@ -51,7 +51,7 @@ namespace JellyFramework.PoolingFactorySystem
             }
             T newObj = Object.Instantiate(prefab, parent);
             newObj.PoolId = instanceCount;
-            newObj.release = Return;
+            newObj.release = () => Return(newObj);
             newObj.OnSpawned();
             instanceCount++;
             return newObj;

@@ -8,7 +8,7 @@ namespace JellyFramework.PoolingFactorySystem
 {
     public interface ISpawnable<T>
     {
-        Action<T> release { get; set; }
+        Action release { get; set; }
         int PoolId { get; set; }
         void OnSpawned();
         void OnReleased();
