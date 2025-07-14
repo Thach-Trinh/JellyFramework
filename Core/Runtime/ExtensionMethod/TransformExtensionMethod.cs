@@ -102,6 +102,14 @@ namespace JellyFramework.ExtensionMethod
             transform.localEulerAngles = angle;
         }
 
+
+        public static void SetSizeDeltaY(this RectTransform rectTransform, float value)
+        {
+            Vector2 sizeDelta = rectTransform.sizeDelta;
+            sizeDelta.y = value;
+            rectTransform.sizeDelta = sizeDelta;
+        }
+
         public static void LookToTargetOnXZPlane(this Transform transform, Vector3 target)
         {
             Vector3 direction = target - transform.position;
