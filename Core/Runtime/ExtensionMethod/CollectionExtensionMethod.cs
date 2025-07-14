@@ -95,41 +95,53 @@ namespace JellyFramework.ExtensionMethod
         }
 
 
-        public static bool TryAdd<T>(this List<T> lst, T element)
+        public static void TryAdd<T>(this List<T> lst, T element)
         {
-            bool canAdd = lst.Contains(element);
-            if (!canAdd)
+            if (!lst.Contains(element))
                 lst.Add(element);
-            return canAdd;
+            else
+                Debug.LogWarning($"Element {element} already exists in the list.");
         }
 
-        public static void LogInfo<T>(this T[] arr, string label)
+        public static void LogInfo<T>(this T[] arr, string label, Func<T, string> getInfo = null)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{label}: {arr.Length}");
             for (int i = 0; i < arr.Length; i++)
-                sb.AppendLine($"- {i}: {arr[i]}");
+            {
+                string info = getInfo != null ? getInfo(arr[i]) : arr[i].ToString();
+                sb.AppendLine($"- {i}: {info}");
+            }
             Debug.Log(sb);
         }
 
-
-        public static void LogInfo<T>(this List<T> lst, string label)
+        public static void LogInfo<T>(this List<T> lst, string label, Func<T, string> getInfo = null)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{label}: {lst.Count}");
             for (int i = 0; i < lst.Count; i++)
-                sb.AppendLine($"- {i}: {lst[i]}");
+            {
+                string info = getInfo != null ? getInfo(lst[i]) : lst[i].ToString();
+                sb.AppendLine($"- {i}: {info}");
+            }
             Debug.Log(sb);
         }
 
-        public static void LogInfo<TKey, TValue>(this Dictionary<TKey, TValue> dict, string label)
+
+
+        public static void LogInfo<TKey, TValue>(this Dictionary<TKey, TValue> dict, string label, Func<TKey, string> getKeyInfo = null, Func<TValue, string> getValueInfo = null)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{label}: {dict.Count}");
             foreach (KeyValuePair<TKey, TValue> pair in dict)
-                sb.AppendLine($"- {pair.Key}: {pair.Value}");
+            {
+                string keyInfo = getKeyInfo != null ? getKeyInfo(pair.Key) : pair.Key.ToString();
+                string valueInfo = getValueInfo != null ? getValueInfo(pair.Value) : pair.Value.ToString();
+                sb.AppendLine($"- {keyInfo}: {valueInfo}");
+            }
             Debug.Log(sb);
         }
+
 
 
         public static List<T> TryGetRange<T>(this List<T> lst, int index, int count)
@@ -166,15 +178,5 @@ namespace JellyFramework.ExtensionMethod
             }
             return default;
         }
-
-        //public static void LogInfo<T>(this List<ElementAmount<T>> lst)
-        //{
-        //    Debug.Log($"Total: {lst.Count}");
-        //    for (int i = 0; i < lst.Count; i++)
-        //    {
-        //        ElementAmount<T> elementAmount = lst[i];
-        //        Debug.Log($"Element {elementAmount.element} - Amount {elementAmount.amount}:");
-        //    }
-        //}
     }
 }
