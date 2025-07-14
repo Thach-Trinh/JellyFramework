@@ -153,6 +153,20 @@ namespace JellyFramework.ExtensionMethod
                 elementAmount.amount++;
         }
 
+        public static T ChooseByWeight<T>(this List<ElementWeight<T>> list)
+        {
+            float totalWeight = list.Sum(i => i.weight);
+            float randomValue = Random.Range(0f, totalWeight);
+            float currentSum = 0f;
+            for (int i = 0; i < list.Count; i++)
+            {
+                currentSum += list[i].weight;
+                if (randomValue < currentSum)
+                    return list[i].element;
+            }
+            return default;
+        }
+
         //public static void LogInfo<T>(this List<ElementAmount<T>> lst)
         //{
         //    Debug.Log($"Total: {lst.Count}");
