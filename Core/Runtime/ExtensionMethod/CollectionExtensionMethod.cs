@@ -141,6 +141,18 @@ namespace JellyFramework.ExtensionMethod
             return lst.GetRange(newIndex, newCount);
         }
 
+        public static void CountElement<T>(this List<ElementAmount<T>> lst, T element)
+            => CountElement(lst, element, x => x.element.Equals(element));
+
+        public static void CountElement<T>(this List<ElementAmount<T>> lst, T element, Predicate<ElementAmount<T>> match)
+        {
+            ElementAmount<T> elementAmount = lst.Find(match);
+            if (elementAmount == null)
+                lst.Add(new ElementAmount<T>(element, 1));
+            else
+                elementAmount.amount++;
+        }
+
         //public static void LogInfo<T>(this List<ElementAmount<T>> lst)
         //{
         //    Debug.Log($"Total: {lst.Count}");
@@ -149,30 +161,6 @@ namespace JellyFramework.ExtensionMethod
         //        ElementAmount<T> elementAmount = lst[i];
         //        Debug.Log($"Element {elementAmount.element} - Amount {elementAmount.amount}:");
         //    }
-        //}
-
-        //public static void CountElement<T>(this List<ElementAmount<T>> lst, T element)
-        //{
-        //    CountElement(lst, element, x => x.element.Equals(element));
-        //}
-
-        //public static void CountElement<T>(this List<ElementAmount<T>> lst, T element, Predicate<ElementAmount<T>> match)
-        //{
-        //    ElementAmount<T> elementAmount = lst.Find(match);
-        //    if (elementAmount == null)
-        //        lst.Add(new ElementAmount<T>(element, 1));
-        //    else
-        //        elementAmount.amount++;
-        //}
-
-        //public static void CollectElement<T1, T2>(this List<ElementGroup<T1, T2>> lst, T2 element, int capacity, Func<T2, T1> getData)
-        //{
-        //    T1 data = getData(element);
-        //    ElementGroup<T1, T2> elementGroup = lst.Find((x) => x.key.Equals(data));
-        //    if (elementGroup == null)
-        //        lst.Add(new ElementGroup<T1, T2>(data, element, capacity));
-        //    else
-        //        elementGroup.TryAdd(element);
         //}
     }
 }

@@ -5,5 +5,11 @@ namespace JellyFramework
     {
         public T element;
         public int amount;
+
+        public ElementAmount(T element, int amount)
+        {
+            this.element = element;
+            this.amount = amount;
+        }
     }
 }
