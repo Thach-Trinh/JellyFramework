@@ -5,8 +5,6 @@ using UnityEditor;
 using UnityEngine;
 using System;
 using JellyFramework.EditorTheme;
-//using Object = UnityEngine.Object;
-
 
 namespace JellyFramework
 {
@@ -81,7 +79,8 @@ namespace JellyFramework
             GUI.backgroundColor = Color.white;
         }
 
-        public static void ShowList<T>(List<T> lst, UnityEngine.Object owner, string title, Action<int, T> showElement, bool showAddBtn, bool showRemoveBtn, string key)
+        public static void ShowList<T>(string title, List<T> lst, Action<int, T> showElement,
+            UnityEngine.Object owner, bool showAddBtn, bool showRemoveBtn, string key)
         {
             void ShowElements()
             {
@@ -97,12 +96,14 @@ namespace JellyFramework
                 }
                 if (removedPatternIndex != null)
                 {
-                    Undo.RegisterCompleteObjectUndo(owner, "Remove Element");
+                    if (owner != null)
+                        Undo.RegisterCompleteObjectUndo(owner, "Remove Element");
                     lst.RemoveAt(removedPatternIndex.Value);
                 }
                 if (showAddBtn && GUILayout.Button("Add Element"))
                 {
-                    Undo.RegisterCompleteObjectUndo(owner, "Add Element");
+                    if (owner != null)
+                        Undo.RegisterCompleteObjectUndo(owner, "Add Element");
                     lst.Add(default);
                 }
             }
@@ -114,15 +115,25 @@ namespace JellyFramework
             CreateDefaultFoldout($"{title}: {lst.Count}", ShowElements, key);
         }
 
-        public static void ShowDictionary<TKey, TValue>(Dictionary<TKey, TValue> dict, Func<TKey, string> getKeyInfo = null, Func<TValue, string> getValueInfo = null)
+
+        public static void ShowDictionary<TKey, TValue>(string title, Dictionary<TKey, TValue> dict, Action<TKey> showKey, Action<TValue> showValue, string key)
         {
-            foreach (KeyValuePair<TKey, TValue> kvp in dict)
+            void ShowElements()
             {
-                EditorGUILayout.BeginHorizontal();
-                ShowGenericField("Key", kvp.Key, getKeyInfo);
-                ShowGenericField("Value", kvp.Value, getValueInfo);
-                EditorGUILayout.EndHorizontal();
+                foreach (KeyValuePair<TKey, TValue> kvp in dict)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    showKey?.Invoke(kvp.Key);
+                    showValue?.Invoke(kvp.Value);
+                    EditorGUILayout.EndHorizontal();
+                }
             }
+            if (dict == null)
+            {
+                EditorGUILayout.LabelField($"{title}: null");
+                return;
+            }
+            CreateDefaultFoldout($"{title}: {dict.Count}", ShowElements, key);
         }
 
         public static T ShowGenericField<T>(string label, T target, Func<T, string> getInfo = null)
