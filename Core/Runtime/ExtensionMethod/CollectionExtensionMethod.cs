@@ -142,8 +142,6 @@ namespace JellyFramework.ExtensionMethod
             Debug.Log(sb);
         }
 
-
-
         public static List<T> TryGetRange<T>(this List<T> lst, int index, int count)
         {
             if (lst.Count == 0)
@@ -151,6 +149,14 @@ namespace JellyFramework.ExtensionMethod
             int newIndex = Mathf.Clamp(index, 0, lst.Count - 1);
             int newCount = Mathf.Clamp(count, 0, lst.Count - newIndex);
             return lst.GetRange(newIndex, newCount);
+        }
+
+        public static void CountElement<T>(this Dictionary<T, int> dict, T element)
+        {
+            if (dict.ContainsKey(element))
+                dict[element]++;
+            else
+                dict[element] = 1;
         }
 
         public static void CountElement<T>(this List<ElementAmount<T>> lst, T element)
