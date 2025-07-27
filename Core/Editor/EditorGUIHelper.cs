@@ -1,10 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using JellyFramework.EditorPrefsSystem;
 using UnityEditor;
 using UnityEngine;
 using System;
 using JellyFramework.EditorTheme;
+using Object = UnityEngine.Object;
 
 namespace JellyFramework
 {
@@ -56,8 +56,6 @@ namespace JellyFramework
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
-
-
 
         private static void CreateRegion(string label, Color color, Action action, BoolEditorPrefsWrapper prefHandler)
         {
@@ -155,6 +153,55 @@ namespace JellyFramework
             EditorGUILayout.LabelField(label, getInfo != null ? getInfo(target) : target.ToString());
             return target;
         }
-    }
 
+        public static void ShowEnumGUI<T>(string label, Object obj, ref T curValue) where T : Enum
+        {
+            T newValue = (T)EditorGUILayout.EnumPopup(label, curValue);
+            if (!newValue.Equals(curValue))
+            {
+                Undo.RegisterCompleteObjectUndo(obj, "Enum Value");
+                curValue = newValue;
+            }
+        }
+
+        public static void ShowIntGUI(string label, Object obj, ref int curValue)
+        {
+            int newValue = EditorGUILayout.IntField(label, curValue);
+            if (newValue != curValue)
+            {
+                Undo.RegisterCompleteObjectUndo(obj, "Int Value");
+                curValue = newValue;
+            }
+        }
+
+        public static void ShowFloatGUI(string label, Object obj, ref float curValue)
+        {
+            float newValue = EditorGUILayout.FloatField(label, curValue);
+            if (newValue != curValue)
+            {
+                Undo.RegisterCompleteObjectUndo(obj, "Float Value");
+                curValue = newValue;
+            }
+        }
+
+        public static void ShowStringGUI(string label, Object obj, ref string curValue)
+        {
+            string newValue = EditorGUILayout.TextField(label, curValue);
+            if (newValue != curValue)
+            {
+                Undo.RegisterCompleteObjectUndo(obj, "String Value");
+                curValue = newValue;
+            }
+        }
+
+        public static void ShowBoolGUI(string label, Object obj, ref bool curValue)
+        {
+            bool newValue = EditorGUILayout.Toggle(label, curValue);
+            if (newValue != curValue)
+            {
+                Undo.RegisterCompleteObjectUndo(obj, "Bool Value");
+                curValue = newValue;
+            }
+        }
+    }
 }
