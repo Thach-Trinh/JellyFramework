@@ -11,19 +11,20 @@ namespace JellyFramework.StateMachine
         where TType : Enum
     {
         [SerializeReference] protected List<TState> states;
-        private TState curState;
+        private TState currentState;
+        public TState CurrentState => currentState;
 
         public void InitStates() => states.Iterate(x => x.Init(this));
 
         public void ChangeState(TType type, params object[] data)
         {
             TState newState = states.Find((state) => state.Type.Equals(type));
-            curState?.ExitState();
-            curState = newState;
-            curState?.EnterState(data);
+            currentState?.ExitState();
+            currentState = newState;
+            currentState?.EnterState(data);
         }
 
-        public void Update(float deltaTime, float timeScale) => curState?.UpdateState(deltaTime, timeScale);
+        public void Update(float deltaTime, float timeScale) => currentState?.UpdateState(deltaTime, timeScale);
     }
 }
 
