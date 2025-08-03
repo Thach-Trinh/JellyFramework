@@ -11,7 +11,7 @@ namespace JellyFramework.StateMachine
         where TType : Enum
     {
         [SerializeReference] protected List<TState> states;
-        private TState currentState;
+        protected TState currentState;
         public TState CurrentState => currentState;
 
         public void InitStates() => states.Iterate(x => x.Init(this));
