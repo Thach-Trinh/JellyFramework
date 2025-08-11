@@ -12,7 +12,8 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "JELLY_SUPPORT_UNITASK"
+        "JELLY_SUPPORT_UNITASK",
+        "ENABLE_JELLY_TWEEN"
     ],
     "versionDefines": [],
     "noEngineReferences": false
