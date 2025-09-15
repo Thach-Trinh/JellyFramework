@@ -159,14 +159,14 @@ namespace JellyFramework.ExtensionMethod
                 dict[element] = 1;
         }
 
-        public static void CountElement<T>(this List<ElementAmount<T>> lst, T element)
+        public static void CountElement<T>(this List<ElementCount<T>> lst, T element)
             => CountElement(lst, element, x => x.element.Equals(element));
 
-        public static void CountElement<T>(this List<ElementAmount<T>> lst, T element, Predicate<ElementAmount<T>> match)
+        public static void CountElement<T>(this List<ElementCount<T>> list, T element, Predicate<ElementCount<T>> match)
         {
-            ElementAmount<T> elementAmount = lst.Find(match);
+            ElementCount<T> elementAmount = list.Find(match);
             if (elementAmount == null)
-                lst.Add(new ElementAmount<T>(element, 1));
+                list.Add(new ElementCount<T>(element, 1));
             else
                 elementAmount.amount++;
         }
