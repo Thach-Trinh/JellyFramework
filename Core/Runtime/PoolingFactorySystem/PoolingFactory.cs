@@ -1,70 +1,76 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 
 namespace JellyFramework.PoolingFactorySystem
 {
-    [Serializable]
-    public class PoolingFactoryWithId<T1, T2> : PoolingFactory<T1>
-    where T1 : MonoBehaviour, ISpawnable<T1>
-    where T2 : Enum
+    public class PoolingFactory<T>
     {
-        [SerializeField] private T2 type;
-        public PoolingFactoryWithId(T1 prefab) : base(prefab) { }
-        public T2 Type => type;
-    }
+        private Queue<T> pool = new Queue<T>();
+        private Func<T> createInstance;
 
-    public class PoolingFactory<T> where T : MonoBehaviour, ISpawnable<T>
-    {
-        [SerializeField] protected T prefab;
-        protected Queue<T> pool = new Queue<T>();
-        protected string name;
-        protected int instanceCount;
-        public int InstanceCount => instanceCount;
-        public int PoolCount => pool != null ? pool.Count : 0;
-
-        public PoolingFactory(T prefab)
-        {
-            this.prefab = prefab;
-            Init();
-        }
-
-        public void Init()
+        public PoolingFactory(Func<T> createInstance)
         {
             pool = new Queue<T>();
-            name = prefab.name;
-            instanceCount = 0;
+            this.createInstance = createInstance;
         }
 
-        public T Spawn(Transform parent)
+
+        public T GetInstance()
+        {
+            if (pool.Count > 0)
+                return pool.Dequeue();
+            return createInstance();
+        }
+
+        public void Return(T obj) => pool.Enqueue(obj);
+    }
+
+    public class SpawneblePoolingFactory<T> where T : ISpawnable
+    {
+        private Queue<T> pool = new Queue<T>();
+        private Func<T> createInstance;
+
+        public SpawneblePoolingFactory(Func<T> createInstance)
+        {
+            pool = new Queue<T>();
+            this.createInstance = createInstance;
+        }
+
+        public bool TryGetPooledInstance(out T instance)
         {
             if (pool.Count > 0)
             {
-                T availableObj = pool.Dequeue();
-                availableObj.gameObject.SetActive(true);
-                availableObj.transform.SetParent(parent);
-                availableObj.OnSpawned();
-                return availableObj;
+                instance = pool.Dequeue();
+                instance.OnSpawned();
+                return true;
             }
-            T newObj = Object.Instantiate(prefab, parent);
-            newObj.PoolId = instanceCount;
+            instance = default;
+            return false;
+        }
+
+        public T CreateNewInstance()
+        {
+            T newObj = createInstance();
             newObj.release = () => Return(newObj);
             newObj.OnSpawned();
-            instanceCount++;
             return newObj;
+        }
+
+
+        public T GetInstance()
+        {
+            if (TryGetPooledInstance(out T instance))
+                return instance;
+            return CreateNewInstance();
         }
 
         public void Return(T obj)
         {
-            obj.gameObject.SetActive(false);
             obj.OnReleased();
             pool.Enqueue(obj);
         }
     }
-
 }
 
 
