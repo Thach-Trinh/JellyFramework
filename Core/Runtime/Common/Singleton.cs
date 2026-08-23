@@ -7,7 +7,9 @@ namespace JellyFramework
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         public static T Instance;
-        private void Awake()
+        private void Awake() => CustomAwake();
+
+        protected virtual void CustomAwake()
         {
             if (Instance == null)
             {
