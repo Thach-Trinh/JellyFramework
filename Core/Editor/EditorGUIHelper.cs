@@ -78,7 +78,9 @@ namespace JellyFramework
         }
 
         public static void ShowList<T>(string title, List<T> lst, Action<int, T> showElement,
-            UnityEngine.Object owner, bool showAddBtn, bool showRemoveBtn, string key)
+            Object owner, string key,
+            bool showAddBtn, Func<T> createInstance,
+            bool showRemoveBtn, Action<T> onRemove)
         {
             void ShowElements()
             {
@@ -96,13 +98,16 @@ namespace JellyFramework
                 {
                     if (owner != null)
                         Undo.RegisterCompleteObjectUndo(owner, "Remove Element");
+                    T removedElement = lst[removedPatternIndex.Value];
                     lst.RemoveAt(removedPatternIndex.Value);
+                    onRemove?.Invoke(removedElement);
                 }
                 if (showAddBtn && GUILayout.Button("Add Element"))
                 {
                     if (owner != null)
                         Undo.RegisterCompleteObjectUndo(owner, "Add Element");
-                    lst.Add(default);
+                    T newInstance = createInstance != null ? createInstance() : default;
+                    lst.Add(newInstance);
                 }
             }
             if (lst == null)
